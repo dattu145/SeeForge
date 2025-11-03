@@ -23,15 +23,27 @@ const Dashboard = () => {
       const response = await axios.get(`${API}/projects`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      setProjects(response.data);
+
+      // Ensure we always set an array
+      const data = response.data;
+
+      if (Array.isArray(data)) {
+        setProjects(data);
+      } else if (Array.isArray(data.projects)) {
+        setProjects(data.projects);
+      } else {
+        console.warn("Unexpected response shape:", data);
+        setProjects([]);
+      }
+
     } catch (error) {
       console.error('Error fetching projects:', error);
-      // For demo, set empty array
       setProjects([]);
     } finally {
       setLoading(false);
     }
   };
+
 
   const getStatusColor = (status) => {
     const colors = {
@@ -49,22 +61,22 @@ const Dashboard = () => {
       <nav className="fixed top-0 w-full z-50 glass border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div 
-              className="flex items-center space-x-2 cursor-pointer" 
+            <div
+              className="flex items-center space-x-2 cursor-pointer"
               onClick={() => navigate('/')}
             >
               <Sparkles className="w-8 h-8 text-[#3B82F6]" />
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Button 
-                onClick={() => navigate('/templates')} 
+              <Button
+                onClick={() => navigate('/templates')}
                 variant="ghost"
               >
                 Templates
               </Button>
-              <Button 
-                onClick={() => navigate('/new-project')} 
+              <Button
+                onClick={() => navigate('/new-project')}
                 className="bg-gradient-to-r from-[#3B82F6] to-[#22D3EE]"
                 data-testid="new-project-btn"
               >
@@ -148,8 +160,8 @@ const Dashboard = () => {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="flex-1 border-white/20"
                       size="sm"
                     >
@@ -157,8 +169,8 @@ const Dashboard = () => {
                       View Details
                     </Button>
                     {project.deployed_url && (
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="border-white/20"
                         size="sm"
                         onClick={() => window.open(project.deployed_url, '_blank')}
@@ -167,8 +179,8 @@ const Dashboard = () => {
                       </Button>
                     )}
                     {project.status === 'completed' && (
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="border-white/20"
                         size="sm"
                       >
