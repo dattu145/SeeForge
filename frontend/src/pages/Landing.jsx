@@ -1,10 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Add Link import
+import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Zap, Rocket, Code2, Palette, Shield } from 'lucide-react';
+import { Sparkles, Zap, Rocket, Code2, Palette, Shield, ArrowRight } from 'lucide-react';
+import { useProject } from '@/context/ProjectContext';
+import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const Landing = () => {
   const navigate = useNavigate();
+  const { dispatch } = useProject();
+  const { navigateToWorkflow } = useSmartNavigation();
+
+  const handleStartBuilding = () => {
+    // Reset any existing project and start fresh
+    navigateToWorkflow('templates', { reset: true });
+  };
+
+  const handleSeeTemplates = () => {
+    navigateToWorkflow('templates');
+  };
+
+  const handleSeePricing = () => {
+    // Direct navigation to pricing page
+    navigate('/pricing');
+  };
+
+  const handleHowItWorks = () => {
+    navigate('/how-it-works');
+  };
 
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-[#E6EEF8]">
@@ -12,19 +34,18 @@ const Landing = () => {
       <nav className="fixed top-0 w-full z-50 glass border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
               <Sparkles className="w-8 h-8 text-[#3B82F6]" />
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="hidden md:flex space-x-8">
-              {/* Replace anchor tags with Link components */}
               <a href="#features" className="hover:text-[#22D3EE] transition-colors">Features</a>
-              <Link to="/pricing" className="hover:text-[#22D3EE] transition-colors">Pricing</Link>
-              <Link to="/how-it-works" className="hover:text-[#22D3EE] transition-colors">How It Works</Link>
-              <Link to="/templates" className="hover:text-[#22D3EE] transition-colors">Templates</Link>
+              <button onClick={handleSeePricing} className="hover:text-[#22D3EE] transition-colors">Pricing</button>
+              <button onClick={handleHowItWorks} className="hover:text-[#22D3EE] transition-colors">How It Works</button>
+              <button onClick={handleSeeTemplates} className="hover:text-[#22D3EE] transition-colors">Templates</button>
             </div>
             <Button 
-              onClick={() => navigate('/new-project')} 
+              onClick={handleStartBuilding}
               className="bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] hover:opacity-90 transition-opacity"
               data-testid="start-building-btn"
             >
@@ -62,32 +83,53 @@ const Landing = () => {
               </div>
               <div className="flex items-center space-x-2 glass px-6 py-3 rounded-full">
                 <Rocket className="w-5 h-5 text-[#22D3EE]" />
-                <span>Quick Deploy</span>
+                <span>Deploy in 2-3 Weeks</span>
               </div>
               <div className="flex items-center space-x-2 glass px-6 py-3 rounded-full">
                 <Shield className="w-5 h-5 text-[#22D3EE]" />
-                <span>Founder-friendly</span>
+                <span>Full Code Ownership</span>
               </div>
             </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
               <Button
-                onClick={() => navigate('/new-project')}
+                onClick={handleStartBuilding}
                 className="text-lg px-8 py-6 bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] hover:opacity-90 transition-opacity"
                 data-testid="hero-start-building-btn"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Start Building
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                onClick={() => navigate('/templates')}
+                onClick={handleSeeTemplates}
                 variant="outline"
                 className="text-lg px-8 py-6 border-[#3B82F6] text-[#3B82F6] hover:bg-[#3B82F6] hover:text-white"
                 data-testid="see-templates-btn"
               >
-                See Templates
+                Browse Templates
               </Button>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="flex flex-wrap justify-center gap-8 pt-12 text-center">
+              <div className="glass px-6 py-4 rounded-2xl min-w-[140px]">
+                <div className="text-2xl font-bold text-[#22D3EE]">2-3</div>
+                <div className="text-sm text-[#94A3B8]">Weeks to MVP</div>
+              </div>
+              <div className="glass px-6 py-4 rounded-2xl min-w-[140px]">
+                <div className="text-2xl font-bold text-[#22D3EE]">100%</div>
+                <div className="text-sm text-[#94A3B8]">Code Ownership</div>
+              </div>
+              <div className="glass px-6 py-4 rounded-2xl min-w-[140px]">
+                <div className="text-2xl font-bold text-[#22D3EE]">₹1,499+</div>
+                <div className="text-sm text-[#94A3B8]">Starting Price</div>
+              </div>
+              <div className="glass px-6 py-4 rounded-2xl min-w-[140px]">
+                <div className="text-2xl font-bold text-[#22D3EE]">24/7</div>
+                <div className="text-sm text-[#94A3B8]">Support</div>
+              </div>
             </div>
           </div>
         </div>
@@ -133,7 +175,7 @@ const Landing = () => {
                 description: "Export clean, documented code. It's your project, your codebase, your IP."
               }
             ].map((feature, index) => (
-              <div key={index} className="card" data-testid={`feature-card-${index}`}>
+              <div key={index} className="card hover:scale-105 transition-transform duration-300" data-testid={`feature-card-${index}`}>
                 <div className="mb-4">{feature.icon}</div>
                 <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-[#94A3B8]">{feature.description}</p>
@@ -142,41 +184,85 @@ const Landing = () => {
           </div>
         </div>
       </section>
+      
 
       {/* CTA Section */}
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="card">
+          <div className="card border-2 border-[#3B82F6]">
+            <Sparkles className="w-16 h-16 text-[#3B82F6] mx-auto mb-6" />
             <h2 className="heading-font text-4xl font-bold mb-6">
-              Ready to build your startup?
+              Ready to Build Your Startup?
             </h2>
-            <p className="text-xl text-[#94A3B8] mb-8">
-              Join founders who are shipping faster with SeeForge
+            <p className="text-xl text-[#94A3B8] mb-8 max-w-2xl mx-auto">
+              Join hundreds of founders who have launched their MVPs with SeeForge. 
+              No technical skills required.
             </p>
-            <Button
-              onClick={() => navigate('/new-project')}
-              className="text-lg px-8 py-6 bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] hover:opacity-90 transition-opacity"
-              data-testid="cta-start-building-btn"
-            >
-              Start Your Project Now
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                onClick={handleStartBuilding}
+                className="text-lg px-8 py-6 bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] hover:opacity-90 transition-opacity"
+                data-testid="cta-start-building-btn"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Start Your Project Now
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                onClick={handleSeePricing}
+                variant="outline"
+                className="text-lg px-8 py-6 border-white/20 text-white hover:text-white hover:bg-white/10"
+              >
+                View Pricing Plans
+              </Button>
+            </div>
+            <p className="text-sm text-[#94A3B8] mt-6">
+              ₹1,499 starting price • 15-day money-back guarantee • No credit card required to start
+            </p>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <Sparkles className="w-6 h-6 text-[#3B82F6]" />
-            <span className="heading-font text-xl font-bold">SeeForge</span>
+      <footer className="border-t border-white/10 py-12 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <Sparkles className="w-6 h-6 text-[#3B82F6]" />
+                <span className="heading-font text-xl font-bold">SeeForge</span>
+              </div>
+              <p className="text-[#94A3B8] text-sm">
+                Building the next generation of startups, one MVP at a time.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold mb-4">Product</h3>
+              <div className="space-y-2 text-sm text-[#94A3B8]">
+                <button onClick={handleSeeTemplates} className="block hover:text-[#22D3EE]">Templates</button>
+                <button onClick={handleSeePricing} className="block hover:text-[#22D3EE]">Pricing</button>
+                <button onClick={handleHowItWorks} className="block hover:text-[#22D3EE]">How It Works</button>
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold mb-4">Resources</h3>
+              <div className="space-y-2 text-sm text-[#94A3B8]">
+                <a href="#" className="block hover:text-[#22D3EE]">Documentation</a>
+                <a href="#" className="block hover:text-[#22D3EE]">Blog</a>
+                <a href="#" className="block hover:text-[#22D3EE]">Support</a>
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold mb-4">Company</h3>
+              <div className="space-y-2 text-sm text-[#94A3B8]">
+                <a href="#" className="block hover:text-[#22D3EE]">About</a>
+                <a href="#" className="block hover:text-[#22D3EE]">Contact</a>
+                <a href="#" className="block hover:text-[#22D3EE]">Careers</a>
+              </div>
+            </div>
           </div>
-          <div className="flex space-x-6 text-[#94A3B8]">
-            {/* Replace footer anchor tags with Link components */}
-            <Link to="/pricing" className="hover:text-[#22D3EE]">Pricing</Link>
-            <Link to="/how-it-works" className="hover:text-[#22D3EE]">How it Works</Link>
-            <Link to="/templates" className="hover:text-[#22D3EE]">Templates</Link>
-            <Link to="/contact" className="hover:text-[#22D3EE]">Contact</Link>
+          <div className="border-t border-white/10 pt-8 text-center text-sm text-[#94A3B8]">
+            <p>&copy; 2024 SeeForge. All rights reserved. Built for founders, by builders.</p>
           </div>
         </div>
       </footer>

@@ -1,0 +1,69 @@
+{
+  "offers": [
+    {
+      "id": "student-discount",
+      "name": "Student Discount",
+      "icon": "🎓",
+      "description": "15% off with verified .edu email or college ID",
+      "discount": 15,
+      "requirements": ["Student ID", "Edu email verification"],
+      "category": "discount"
+    },
+    {
+      "id": "referral-bonus",
+      "name": "Referral Bonus",
+      "icon": "🤝",
+      "description": "₹500 off for each friend who signs up",
+      "discount": 500,
+      "requirements": ["Friend signs up", "Friend makes purchase"],
+      "category": "bonus"
+    },
+    {
+      "id": "early-adopter",
+      "name": "Early Adopter",
+      "icon": "⚙️",
+      "description": "First 50 customers get lifetime 20% off",
+      "discount": 20,
+      "requirements": ["Be among first 50 customers"],
+      "category": "discount",
+      "limited": true
+    },
+    {
+      "id": "bulk-discount",
+      "name": "Bulk Discount",
+      "icon": "📦",
+      "description": "10% off for 3+ projects",
+      "discount": 10,
+      "requirements": ["3 or more projects"],
+      "category": "discount"
+    },
+    {
+      "id": "non-profit",
+      "name": "Non-Profit Discount",
+      "icon": "❤️",
+      "description": "25% off for registered non-profits",
+      "discount": 25,
+      "requirements": ["Non-profit registration"],
+      "category": "discount"
+    }
+  ],
+  "enhancementOffer": {
+    "id": "enhance-existing",
+    "name": "Enhance My Existing Project",
+    "basePrice": 700,
+    "description": "Already have a GitHub repository? Connect it and we'll analyze and enhance your project based on your specific requirements.",
+    "features": [
+      "Code analysis and recommendations",
+      "Feature additions",
+      "Performance optimizations",
+      "Security improvements",
+      "Modernization updates"
+    ],
+    "benefits": [
+      "Quick turnaround",
+      "Minimal disruption",
+      "Incremental improvements",
+      "Expert code review"
+    ]
+  }
+}

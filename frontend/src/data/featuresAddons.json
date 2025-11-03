@@ -1,0 +1,121 @@
+{
+  "features": [
+    {
+      "id": "auth",
+      "name": "Authentication System",
+      "description": "Email/Google/GitHub login with secure sessions",
+      "price": 0,
+      "included": true,
+      "category": "core"
+    },
+    {
+      "id": "payments",
+      "name": "Payment Integration",
+      "description": "Stripe/Razorpay with secure checkout flow",
+      "price": 500,
+      "category": "core"
+    },
+    {
+      "id": "admin-panel",
+      "name": "Admin Panel",
+      "description": "Complete CRUD operations and user management",
+      "price": 1500,
+      "category": "core"
+    },
+    {
+      "id": "multi-language",
+      "name": "Multi-language Support",
+      "description": "i18n with language switching capabilities",
+      "price": 800,
+      "category": "core"
+    },
+    {
+      "id": "chat-support",
+      "name": "Chat/Support Widget",
+      "description": "Real-time chat support system",
+      "price": 1200,
+      "category": "core"
+    },
+    {
+      "id": "seo",
+      "name": "SEO & Meta Setup",
+      "description": "Optimized for search engines with meta tags",
+      "price": 0,
+      "included": true,
+      "category": "core"
+    },
+    {
+      "id": "analytics",
+      "name": "Basic Analytics",
+      "description": "User tracking and basic analytics dashboard",
+      "price": 300,
+      "category": "core"
+    },
+    {
+      "id": "notifications",
+      "name": "Push Notifications",
+      "description": "Browser and mobile push notifications",
+      "price": 600,
+      "category": "core"
+    }
+  ],
+  "addons": [
+    {
+      "id": "custom-domain",
+      "name": "Custom Domain Setup",
+      "description": "Connect your custom domain with SSL certificate",
+      "price": 499,
+      "category": "deployment"
+    },
+    {
+      "id": "branding-pack",
+      "name": "Logo + Branding Pack",
+      "description": "Custom logo design and branding guidelines",
+      "price": 799,
+      "category": "design"
+    },
+    {
+      "id": "seo-advanced",
+      "name": "Advanced SEO Optimization",
+      "description": "Complete SEO audit and optimization",
+      "price": 999,
+      "category": "marketing"
+    },
+    {
+      "id": "ai-assistant",
+      "name": "AI Assistant Integration",
+      "description": "ChatGPT-like assistant for your application",
+      "price": 1499,
+      "category": "ai"
+    },
+    {
+      "id": "analytics-pro",
+      "name": "Advanced Analytics Dashboard",
+      "description": "Comprehensive analytics with custom reports",
+      "price": 499,
+      "category": "analytics"
+    },
+    {
+      "id": "maintenance",
+      "name": "Maintenance Support (3 months)",
+      "description": "Bug fixes and technical support for 3 months",
+      "price": 999,
+      "recurring": true,
+      "category": "support"
+    },
+    {
+      "id": "api-docs",
+      "name": "API Documentation",
+      "description": "Comprehensive API documentation with examples",
+      "price": 399,
+      "category": "documentation"
+    },
+    {
+      "id": "performance",
+      "name": "Performance Optimization",
+      "description": "Advanced performance tuning and optimization",
+      "price": 899,
+      "category": "optimization"
+    }
+  ]
+}

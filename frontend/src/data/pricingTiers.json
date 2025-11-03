@@ -1,0 +1,113 @@
+{
+  "tiers": [
+    {
+      "id": "idea-spark",
+      "name": "Idea Spark",
+      "price": 1499,
+      "description": "Visualize your concept",
+      "features": [
+        "Project wireframes",
+        "Basic tech stack recommendation",
+        "Feature roadmap",
+        "1 revision"
+      ],
+      "cta": "Visualize My Idea",
+      "highlighted": false,
+      "deliveryTime": "1 week",
+      "bestFor": ["Concept validation", "Pitch decks", "Initial planning"]
+    },
+    {
+      "id": "starter",
+      "name": "Starter",
+      "price": 3000,
+      "description": "Build your prototype",
+      "features": [
+        "Basic frontend + backend",
+        "1 UI template",
+        "User authentication",
+        "Basic admin panel",
+        "Code export",
+        "2 weeks delivery"
+      ],
+      "cta": "Build My Prototype",
+      "highlighted": false,
+      "deliveryTime": "2 weeks",
+      "bestFor": ["MVPs", "Prototypes", "Small projects"]
+    },
+    {
+      "id": "mvp-launch",
+      "name": "MVP Launch",
+      "price": 6000,
+      "description": "Launch your startup",
+      "features": [
+        "Everything in Starter",
+        "Custom UI design",
+        "Payment integration",
+        "Email notifications",
+        "SEO optimization",
+        "GitHub repository",
+        "3 weeks delivery"
+      ],
+      "cta": "Launch MVP",
+      "highlighted": true,
+      "deliveryTime": "3 weeks",
+      "bestFor": ["Startups", "SaaS products", "Marketplaces"]
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "price": 12000,
+      "description": "Scale your business",
+      "features": [
+        "Everything in MVP Launch",
+        "Advanced features",
+        "Multi-language support",
+        "Analytics dashboard",
+        "API integrations",
+        "Performance optimization",
+        "4 weeks delivery"
+      ],
+      "cta": "Scale My Startup",
+      "highlighted": false,
+      "deliveryTime": "4 weeks",
+      "bestFor": ["Growing businesses", "Feature-rich apps", "Scalable solutions"]
+    },
+    {
+      "id": "ai-pro",
+      "name": "AI Pro",
+      "price": 20000,
+      "description": "Add AI superpowers",
+      "features": [
+        "Everything in Growth",
+        "AI assistant integration",
+        "Chatbot with NLP",
+        "Personalization engine",
+        "Advanced automation",
+        "Priority support",
+        "5 weeks delivery"
+      ],
+      "cta": "Add AI Magic",
+      "highlighted": false,
+      "deliveryTime": "5 weeks",
+      "bestFor": ["AI applications", "Advanced automation", "Enterprise solutions"]
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price": null,
+      "description": "Custom solutions",
+      "features": [
+        "Custom requirements",
+        "Dedicated team",
+        "White-label solutions",
+        "Advanced integrations",
+        "SLA guarantees",
+        "24/7 support"
+      ],
+      "cta": "Let's Discuss",
+      "highlighted": false,
+      "deliveryTime": "Custom",
+      "bestFor": ["Large enterprises", "Complex systems", "Custom requirements"]
+    }
+  ]
+}

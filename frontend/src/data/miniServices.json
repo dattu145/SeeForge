@@ -1,0 +1,134 @@
+{
+  "miniServices": [
+    {
+      "id": "custom-domain",
+      "name": "Custom Domain Setup",
+      "price": 499,
+      "description": "Connect your domain with SSL certificate",
+      "category": "deployment",
+      "deliveryTime": "24-48 hours",
+      "features": [
+        "Domain connection setup",
+        "SSL certificate installation",
+        "DNS configuration",
+        "Email setup guidance"
+      ],
+      "popular": true
+    },
+    {
+      "id": "branding-pack",
+      "name": "Logo + Branding Pack",
+      "price": 799,
+      "description": "AI-generated branding assets",
+      "category": "design",
+      "deliveryTime": "3-5 days",
+      "features": [
+        "AI-generated logo design",
+        "Color palette selection",
+        "Typography recommendations",
+        "Brand style guide"
+      ],
+      "popular": true
+    },
+    {
+      "id": "seo-optimization",
+      "name": "SEO Optimization",
+      "price": 999,
+      "description": "Meta tags, sitemap, and SEO setup",
+      "category": "marketing",
+      "deliveryTime": "2-3 days",
+      "features": [
+        "Meta tags optimization",
+        "XML sitemap generation",
+        "SEO-friendly URL structure",
+        "Basic SEO audit report"
+      ]
+    },
+    {
+      "id": "ai-assistant",
+      "name": "AI Assistant Integration",
+      "price": 1499,
+      "description": "Chatbot integration with NLP",
+      "category": "ai",
+      "deliveryTime": "3-4 days",
+      "features": [
+        "AI chatbot integration",
+        "Natural language processing",
+        "Custom training data setup",
+        "Basic conversation flows"
+      ]
+    },
+    {
+      "id": "hosting-extension",
+      "name": "Hosting Extension",
+      "price": 199,
+      "description": "Additional month of hosting",
+      "category": "hosting",
+      "deliveryTime": "Instant",
+      "features": [
+        "30-day hosting extension",
+        "Server maintenance",
+        "Security updates",
+        "Technical support"
+      ],
+      "recurring": true
+    },
+    {
+      "id": "maintenance-support",
+      "name": "Maintenance Support",
+      "price": 999,
+      "description": "Monthly maintenance and support",
+      "category": "support",
+      "deliveryTime": "Ongoing",
+      "features": [
+        "Monthly security updates",
+        "Bug fixes and patches",
+        "Performance monitoring",
+        "Priority support"
+      ],
+      "recurring": true
+    },
+    {
+      "id": "analytics-dashboard",
+      "name": "Analytics Dashboard",
+      "price": 499,
+      "description": "User activity tracking dashboard",
+      "category": "analytics",
+      "deliveryTime": "2-3 days",
+      "features": [
+        "User analytics setup",
+        "Custom dashboard creation",
+        "Key metrics tracking",
+        "Data visualization"
+      ]
+    },
+    {
+      "id": "performance-audit",
+      "name": "Performance Audit",
+      "price": 699,
+      "description": "Comprehensive performance analysis",
+      "category": "optimization",
+      "deliveryTime": "2-3 days",
+      "features": [
+        "Website performance analysis",
+        "Load time optimization",
+        "Resource optimization",
+        "Performance report"
+      ]
+    },
+    {
+      "id": "security-audit",
+      "name": "Security Audit",
+      "price": 899,
+      "description": "Security assessment and fixes",
+      "category": "security",
+      "deliveryTime": "3-4 days",
+      "features": [
+        "Security vulnerability assessment",
+        "Code security review",
+        "Security recommendations",
+        "Basic security fixes"
+      ]
+    }
+  ]
+}

@@ -1,35 +1,51 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header, Body
 from fastapi.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 from pathlib import Path
 import os
 import logging
 import uuid
 import jwt
-import httpx
-from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Safe import for emergentintegrations with fallback
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    HAS_EMERGENT = True
+    logger.info("emergentintegrations loaded successfully")
+except ImportError:
+    HAS_EMERGENT = False
+    logger.warning("emergentintegrations not available, using mock AI")
+
+# MongoDB connection with fallback
+try:
+    mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+    from motor.motor_asyncio import AsyncIOMotorClient
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ.get('DB_NAME', 'seeforge_db')]
+    HAS_MONGO = True
+    logger.info("MongoDB connected successfully")
+except Exception as e:
+    logger.error(f"MongoDB connection failed: {e}")
+    HAS_MONGO = False
+    db = None
+    logger.info("Using in-memory storage (MongoDB not available)")
 
 # Create the main app without a prefix
 app = FastAPI(title="SeeForge API", version="1.0.0")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # ==================== Models ====================
 
@@ -43,6 +59,21 @@ class User(BaseModel):
     github_username: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_signin: Optional[datetime] = None
+    is_student: bool = False
+
+class ProjectCreate(BaseModel):
+    name: str
+    description: str
+    category: str
+    platform: str = "web"
+    frontend: str
+    backend: str
+    ui_template: str
+    features: List[str] = []
+    addons: List[str] = []
+    deployment_option: str = "vercel"
+    github_repo_url: Optional[str] = None
+    tier: str = "Starter"
     is_student: bool = False
 
 class Project(BaseModel):
@@ -67,19 +98,6 @@ class Project(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class ProjectCreate(BaseModel):
-    name: str
-    description: str
-    category: str
-    platform: str = "web"
-    frontend: str
-    backend: str
-    ui_template: str
-    features: List[str] = []
-    addons: List[str] = []
-    deployment_option: str
-    github_repo_url: Optional[str] = None
-
 class Template(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -91,7 +109,7 @@ class Template(BaseModel):
     tech_stack: Dict[str, str]
     estimated_build_time: str
     base_price: float
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc()))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class AIScaffoldRequest(BaseModel):
     project_config: Dict[str, Any]
@@ -106,27 +124,107 @@ class GithubRepoAnalysis(BaseModel):
     repo_url: str
     requirements: str
 
+# ==================== Demo Data ====================
+
+demo_templates = [
+    {
+        "id": "1",
+        "name": "E-commerce Starter",
+        "description": "Complete e-commerce platform with product catalog, cart, and checkout",
+        "category": "ecommerce",
+        "preview_image": "https://images.unsplash.com/photo-1557821552-17105176677c?w=800",
+        "features": ["Product Management", "Shopping Cart", "Payment Integration", "Admin Dashboard"],
+        "tech_stack": {"frontend": "React + Tailwind", "backend": "Node.js + MongoDB"},
+        "estimated_build_time": "2-3 weeks",
+        "base_price": 6000,
+        "created_at": datetime.now(timezone.utc)
+    },
+    {
+        "id": "2", 
+        "name": "SaaS Dashboard",
+        "description": "Modern SaaS dashboard with user management and analytics",
+        "category": "saas", 
+        "preview_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
+        "features": ["User Auth", "Analytics Dashboard", "Subscription Management", "API Integration"],
+        "tech_stack": {"frontend": "Next.js", "backend": "Supabase"},
+        "estimated_build_time": "2 weeks",
+        "base_price": 8000,
+        "created_at": datetime.now(timezone.utc)
+    },
+    {
+        "id": "3",
+        "name": "Marketplace Platform",
+        "description": "Multi-vendor marketplace with seller and buyer interfaces",
+        "category": "marketplace",
+        "preview_image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
+        "features": ["Vendor Dashboard", "Product Listings", "Order Management", "Reviews & Ratings"],
+        "tech_stack": {"frontend": "React + Redux", "backend": "FastAPI + PostgreSQL"},
+        "estimated_build_time": "3-4 weeks",
+        "base_price": 12000,
+        "created_at": datetime.now(timezone.utc)
+    },
+    {
+        "id": "4",
+        "name": "Portfolio Website",
+        "description": "Stunning portfolio website for creators and professionals",
+        "category": "portfolio",
+        "preview_image": "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800",
+        "features": ["Project Showcase", "Blog", "Contact Form", "Admin Panel"],
+        "tech_stack": {"frontend": "Next.js", "backend": "Contentful CMS"},
+        "estimated_build_time": "1 week",
+        "base_price": 3000,
+        "created_at": datetime.now(timezone.utc)
+    }
+]
+
+demo_projects = []
+
 # ==================== Helper Functions ====================
 
 def get_current_user_id(authorization: Optional[str] = Header(None)) -> str:
-    """Extract user ID from JWT token"""
+    """Extract user ID from JWT token with fallback for demo"""
     if not authorization:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        # For demo purposes, return a mock user ID
+        return "demo-user-123"
     
     try:
         token = authorization.replace("Bearer ", "")
-        jwt_secret = os.environ.get('SUPABASE_JWT_SECRET', 'secret')
+        jwt_secret = os.environ.get('SUPABASE_JWT_SECRET', 'demo-secret')
         payload = jwt.decode(token, jwt_secret, algorithms=["HS256"], options={"verify_signature": False})
-        return payload.get("sub")
+        return payload.get("sub", "demo-user-123")
     except Exception as e:
         logger.error(f"JWT decode error: {e}")
-        raise HTTPException(status_code=401, detail="Invalid token")
+        return "demo-user-123"
 
 async def generate_ai_scaffold(project_config: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate project scaffold using Gemini API"""
+    """Generate project scaffold using Gemini API with fallback"""
     try:
+        if not HAS_EMERGENT:
+            # Return mock data if emergentintegrations is not available
+            return {
+                "scaffold": {
+                    "file_structure": [
+                        "src/",
+                        "src/components/",
+                        "src/pages/", 
+                        "package.json",
+                        "README.md"
+                    ],
+                    "key_files": {
+                        "package.json": '{"name": "' + project_config.get('name', 'project') + '", "version": "1.0.0"}',
+                        "README.md": "# " + project_config.get('name', 'Project') + " Documentation\n\nBuilt with SeeForge"
+                    },
+                    "setup_instructions": ["npm install", "npm run dev", "Start coding!"],
+                    "estimated_time": "48 hours"
+                },
+                "status": "generated",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+        
         # Get API key from environment
         api_key = os.environ.get('GEMINI_API_KEY', '')
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found")
         
         # Create LlmChat instance
         chat = LlmChat(
@@ -169,9 +267,18 @@ Provide a JSON response with the following structure:
         }
     except Exception as e:
         logger.error(f"AI scaffold generation error: {e}")
+        # Return mock data on error
         return {
-            "scaffold": "Error generating scaffold",
-            "status": "error",
+            "scaffold": {
+                "file_structure": ["src/", "package.json", "README.md"],
+                "key_files": {
+                    "package.json": '{"name": "project", "version": "1.0.0"}',
+                    "README.md": "# Project\n\nAI generation failed, but you can still build!"
+                },
+                "setup_instructions": ["npm install", "npm run dev"],
+                "estimated_time": "48 hours"
+            },
+            "status": "mock_generated",
             "error": str(e)
         }
 
@@ -220,7 +327,7 @@ def calculate_pricing(project_data: Dict[str, Any]) -> Dict[str, Any]:
         "base_cost": base_cost,
         "addons_cost": addons_cost,
         "features_cost": features_cost,
-        "total_cost": total,
+        "total_cost": round(total),
         "currency": "INR"
     }
 
@@ -228,7 +335,7 @@ def calculate_pricing(project_data: Dict[str, Any]) -> Dict[str, Any]:
 
 @api_router.get("/")
 async def root():
-    return {"message": "SeeForge API", "version": "1.0.0"}
+    return {"message": "SeeForge API", "version": "1.0.0", "status": "running", "database": HAS_MONGO, "ai": HAS_EMERGENT}
 
 # ==================== Projects Routes ====================
 
@@ -250,11 +357,16 @@ async def create_project(
         estimated_timeline="2-3 weeks"
     )
     
-    doc = project_obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    doc['updated_at'] = doc['updated_at'].isoformat()
+    if HAS_MONGO:
+        doc = project_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        
+        await db.projects.insert_one(doc)
+    else:
+        # Store in demo data
+        demo_projects.append(project_obj.model_dump())
     
-    await db.projects.insert_one(doc)
     return project_obj
 
 @api_router.get("/projects", response_model=List[Project])
@@ -262,22 +374,30 @@ async def get_projects(authorization: Optional[str] = Header(None)):
     """Get all projects for authenticated user"""
     user_id = get_current_user_id(authorization)
     
-    projects = await db.projects.find({"user_id": user_id}, {"_id": 0}).to_list(1000)
-    
-    for project in projects:
-        if isinstance(project.get('created_at'), str):
-            project['created_at'] = datetime.fromisoformat(project['created_at'])
-        if isinstance(project.get('updated_at'), str):
-            project['updated_at'] = datetime.fromisoformat(project['updated_at'])
-    
-    return projects
+    if HAS_MONGO:
+        projects = await db.projects.find({"user_id": user_id}, {"_id": 0}).to_list(1000)
+        
+        for project in projects:
+            if isinstance(project.get('created_at'), str):
+                project['created_at'] = datetime.fromisoformat(project['created_at'])
+            if isinstance(project.get('updated_at'), str):
+                project['updated_at'] = datetime.fromisoformat(project['updated_at'])
+        
+        return projects
+    else:
+        # Filter projects by user_id from demo data
+        user_projects = [p for p in demo_projects if p.get('user_id') == user_id]
+        return user_projects
 
 @api_router.get("/projects/{project_id}", response_model=Project)
 async def get_project(project_id: str, authorization: Optional[str] = Header(None)):
     """Get a specific project"""
     user_id = get_current_user_id(authorization)
     
-    project = await db.projects.find_one({"id": project_id, "user_id": user_id}, {"_id": 0})
+    if HAS_MONGO:
+        project = await db.projects.find_one({"id": project_id, "user_id": user_id}, {"_id": 0})
+    else:
+        project = next((p for p in demo_projects if p['id'] == project_id and p.get('user_id') == user_id), None)
     
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -298,17 +418,25 @@ async def update_project(
     """Update a project"""
     user_id = get_current_user_id(authorization)
     
-    updates['updated_at'] = datetime.now(timezone.utc).isoformat()
+    updates['updated_at'] = datetime.now(timezone.utc)
     
-    result = await db.projects.update_one(
-        {"id": project_id, "user_id": user_id},
-        {"$set": updates}
-    )
-    
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Project not found")
-    
-    updated_project = await db.projects.find_one({"id": project_id}, {"_id": 0})
+    if HAS_MONGO:
+        result = await db.projects.update_one(
+            {"id": project_id, "user_id": user_id},
+            {"$set": updates}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        updated_project = await db.projects.find_one({"id": project_id}, {"_id": 0})
+    else:
+        project_index = next((i for i, p in enumerate(demo_projects) if p['id'] == project_id and p.get('user_id') == user_id), -1)
+        if project_index == -1:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        demo_projects[project_index].update(updates)
+        updated_project = demo_projects[project_index]
     
     if isinstance(updated_project.get('created_at'), str):
         updated_project['created_at'] = datetime.fromisoformat(updated_project['created_at'])
@@ -322,9 +450,14 @@ async def delete_project(project_id: str, authorization: Optional[str] = Header(
     """Delete a project"""
     user_id = get_current_user_id(authorization)
     
-    result = await db.projects.delete_one({"id": project_id, "user_id": user_id})
+    if HAS_MONGO:
+        result = await db.projects.delete_one({"id": project_id, "user_id": user_id})
+    else:
+        result = type('obj', (object,), {'deleted_count': 0})()
+        demo_projects[:] = [p for p in demo_projects if not (p['id'] == project_id and p.get('user_id') == user_id)]
+        result.deleted_count = 1
     
-    if result.deleted_count == 0:
+    if getattr(result, 'deleted_count', 0) == 0:
         raise HTTPException(status_code=404, detail="Project not found")
     
     return {"message": "Project deleted successfully"}
@@ -352,6 +485,19 @@ async def analyze_github_repo(
     user_id = get_current_user_id(authorization)
     
     try:
+        if not HAS_EMERGENT:
+            return {
+                "analysis": "Mock analysis: Your repository looks good! We can add new features and improve performance.",
+                "base_cost": 700,
+                "status": "completed",
+                "suggestions": [
+                    "Add user authentication",
+                    "Improve code structure", 
+                    "Add responsive design",
+                    "Enhance performance"
+                ]
+            }
+        
         # Create LlmChat instance
         api_key = os.environ.get('GEMINI_API_KEY', '')
         chat = LlmChat(
@@ -391,26 +537,41 @@ Provide:
 @api_router.get("/templates", response_model=List[Template])
 async def get_templates():
     """Get all available templates"""
-    templates = await db.templates.find({}, {"_id": 0}).to_list(1000)
-    
-    for template in templates:
-        if isinstance(template.get('created_at'), str):
-            template['created_at'] = datetime.fromisoformat(template['created_at'])
-    
-    return templates
+    try:
+        if HAS_MONGO:
+            templates = await db.templates.find({}, {"_id": 0}).to_list(1000)
+            
+            for template in templates:
+                if isinstance(template.get('created_at'), str):
+                    template['created_at'] = datetime.fromisoformat(template['created_at'])
+            
+            return templates
+        else:
+            # Return demo data if no database
+            return demo_templates
+    except Exception as e:
+        logger.error(f"Templates fetch error: {e}")
+        return demo_templates
 
 @api_router.get("/templates/{template_id}", response_model=Template)
 async def get_template(template_id: str):
     """Get a specific template"""
-    template = await db.templates.find_one({"id": template_id}, {"_id": 0})
-    
-    if not template:
-        raise HTTPException(status_code=404, detail="Template not found")
-    
-    if isinstance(template.get('created_at'), str):
-        template['created_at'] = datetime.fromisoformat(template['created_at'])
-    
-    return Template(**template)
+    try:
+        if HAS_MONGO:
+            template = await db.templates.find_one({"id": template_id}, {"_id": 0})
+        else:
+            template = next((t for t in demo_templates if t['id'] == template_id), None)
+        
+        if not template:
+            raise HTTPException(status_code=404, detail="Template not found")
+        
+        if isinstance(template.get('created_at'), str):
+            template['created_at'] = datetime.fromisoformat(template['created_at'])
+        
+        return Template(**template)
+    except Exception as e:
+        logger.error(f"Template fetch error: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching template")
 
 # ==================== Pricing Routes ====================
 
@@ -430,8 +591,7 @@ async def create_payment_order(
     """Create Razorpay payment order"""
     user_id = get_current_user_id(authorization)
     
-    # In production, integrate with Razorpay
-    # For now, return mock response
+    # Mock response for development
     order_id = f"order_{uuid.uuid4()}"
     
     return {
@@ -449,10 +609,10 @@ async def verify_payment(
     """Verify Razorpay payment"""
     user_id = get_current_user_id(authorization)
     
-    # In production, verify with Razorpay
+    # Mock verification for development
     return {
         "status": "verified",
-        "payment_id": payment_data.get('payment_id')
+        "payment_id": payment_data.get('payment_id', f"pay_{uuid.uuid4()}")
     }
 
 # ==================== Admin Routes ====================
@@ -460,8 +620,11 @@ async def verify_payment(
 @api_router.get("/admin/projects")
 async def admin_get_all_projects(authorization: Optional[str] = Header(None)):
     """Admin: Get all projects"""
-    # In production, add admin authentication check
-    projects = await db.projects.find({}, {"_id": 0}).to_list(1000)
+    if HAS_MONGO:
+        projects = await db.projects.find({}, {"_id": 0}).to_list(1000)
+    else:
+        projects = demo_projects
+    
     return projects
 
 @api_router.post("/admin/templates", response_model=Template)
@@ -470,53 +633,45 @@ async def admin_create_template(
     authorization: Optional[str] = Header(None)
 ):
     """Admin: Create a new template"""
-    doc = template.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
+    if HAS_MONGO:
+        doc = template.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        
+        await db.templates.insert_one(doc)
+    else:
+        demo_templates.append(template.model_dump())
     
-    await db.templates.insert_one(doc)
     return template
-
-@api_router.put("/admin/templates/{template_id}")
-async def admin_update_template(
-    template_id: str,
-    updates: Dict[str, Any] = Body(...),
-    authorization: Optional[str] = Header(None)
-):
-    """Admin: Update a template"""
-    result = await db.templates.update_one(
-        {"id": template_id},
-        {"$set": updates}
-    )
-    
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Template not found")
-    
-    return {"message": "Template updated successfully"}
-
-@api_router.delete("/admin/templates/{template_id}")
-async def admin_delete_template(
-    template_id: str,
-    authorization: Optional[str] = Header(None)
-):
-    """Admin: Delete a template"""
-    result = await db.templates.delete_one({"id": template_id})
-    
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Template not found")
-    
-    return {"message": "Template deleted successfully"}
 
 # Include the router in the main app
 app.include_router(api_router)
 
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000"],
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    logger.info("SeeForge API starting up...")
+    yield
+    # Shutdown
+    logger.info("SeeForge API shutting down...")
+    if HAS_MONGO:
+        client.close()
+        logger.info("MongoDB connection closed")
+
+# Create the main app with lifespan
+app = FastAPI(title="SeeForge API", version="1.0.0", lifespan=lifespan)
+
+# Include the router in the main app (AFTER creating the app)
+app.include_router(api_router)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

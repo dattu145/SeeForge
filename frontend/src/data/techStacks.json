@@ -1,0 +1,104 @@
+{
+  "frontend": [
+    {
+      "id": "react-vite",
+      "name": "React + Vite",
+      "description": "Lightning-fast development, minimal setup, and modern ESBuild bundling.",
+      "bestFor": "Startups, dashboards, SaaS apps",
+      "timeImpact": "+0 days",
+      "timeDays": 0,
+      "recommended": true
+    },
+    {
+      "id": "nextjs",
+      "name": "Next.js (with React)",
+      "description": "SEO-friendly (SSR/SSG), built-in routing, API routes, and great scalability.",
+      "bestFor": "Production-grade web apps, SEO-based platforms",
+      "timeImpact": "+2 days",
+      "timeDays": 2
+    },
+    {
+      "id": "react-tailwind",
+      "name": "React + Tailwind CSS + shadcn/ui",
+      "description": "Pre-styled, elegant UI components + rapid styling workflow.",
+      "bestFor": "Modern UIs, landing pages, dashboards",
+      "timeImpact": "+1 day",
+      "timeDays": 1
+    },
+    {
+      "id": "react-typescript",
+      "name": "React + TypeScript",
+      "description": "Type-safe, robust, and maintainable for large codebases.",
+      "bestFor": "Enterprise and long-term scalable projects",
+      "timeImpact": "+1 day",
+      "timeDays": 1
+    },
+    {
+      "id": "vue-vite",
+      "name": "Vue 3 + Vite",
+      "description": "Simple, progressive framework with a growing ecosystem and excellent performance.",
+      "bestFor": "Lightweight SPAs and quick prototypes",
+      "timeImpact": "-0.5 days",
+      "timeDays": -0.5
+    },
+    {
+      "id": "svelte-vite",
+      "name": "Svelte + Vite",
+      "description": "Extremely fast, minimal boilerplate, and reactive out of the box.",
+      "bestFor": "Small to mid-sized apps, where performance matters most",
+      "timeImpact": "-1 day",
+      "timeDays": -1
+    }
+  ],
+  "backend": [
+    {
+      "id": "supabase",
+      "name": "Supabase (Auth + DB + Storage)",
+      "description": "Complete open-source Firebase alternative with PostgreSQL, auth, storage, and serverless functions.",
+      "bestFor": "Startups, MVPs, and full-stack apps that need backend + database instantly",
+      "timeImpact": "+0 days",
+      "timeDays": 0,
+      "recommended": true
+    },
+    {
+      "id": "firebase",
+      "name": "Firebase (Firestore + Auth)",
+      "description": "Google's serverless backend — real-time DB, auth, analytics, hosting all in one.",
+      "bestFor": "Mobile/web apps needing fast sync & minimal backend code",
+      "timeImpact": "+1 day",
+      "timeDays": 1
+    },
+    {
+      "id": "node-express",
+      "name": "Node.js + Express.js",
+      "description": "Most popular JS backend — flexible, lightweight, and integrates perfectly with React/Next.",
+      "bestFor": "Custom REST APIs, full control over routes, middleware, and DBs",
+      "timeImpact": "+3 days",
+      "timeDays": 3
+    },
+    {
+      "id": "nestjs",
+      "name": "Node.js + NestJS",
+      "description": "Enterprise-grade structure with dependency injection and modular architecture.",
+      "bestFor": "Large-scale apps, teams, and projects needing clean backend architecture",
+      "timeImpact": "+3.5 days",
+      "timeDays": 3.5
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI + MongoDB/PostgreSQL",
+      "description": "Blazing-fast Python backend with async I/O and easy schema validation.",
+      "bestFor": "ML/AI integrations, data-intensive or API-driven projects",
+      "timeImpact": "+3 days",
+      "timeDays": 3
+    },
+    {
+      "id": "prisma",
+      "name": "Node.js + Prisma + PostgreSQL",
+      "description": "Combines flexibility of Node with the type safety & schema power of Prisma ORM.",
+      "bestFor": "Teams wanting a modern, reliable database layer with full control",
+      "timeImpact": "+2.5 days",
+      "timeDays": 2.5
+    }
+  ]
+}

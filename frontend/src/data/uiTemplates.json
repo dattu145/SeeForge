@@ -1,0 +1,169 @@
+{
+  "templates": [
+    {
+      "id": "ecommerce-starter",
+      "name": "E-commerce Starter",
+      "description": "Complete e-commerce platform with product catalog, cart, and checkout",
+      "category": "ecommerce",
+      "preview_image": "https://images.unsplash.com/photo-1557821552-17105176677c?w=800",
+      "features": [
+        "Product Management",
+        "Shopping Cart",
+        "Payment Integration",
+        "Admin Dashboard"
+      ],
+      "tech_stack": {
+        "frontend": "React + Tailwind",
+        "backend": "Node.js + MongoDB"
+      },
+      "estimated_build_time": "2-3 weeks",
+      "base_price": 6000,
+      "popular": true
+    },
+    {
+      "id": "saas-dashboard",
+      "name": "SaaS Dashboard",
+      "description": "Modern SaaS dashboard with user management and analytics",
+      "category": "saas",
+      "preview_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
+      "features": [
+        "User Auth",
+        "Analytics Dashboard",
+        "Subscription Management",
+        "API Integration"
+      ],
+      "tech_stack": {
+        "frontend": "Next.js",
+        "backend": "Supabase"
+      },
+      "estimated_build_time": "2 weeks",
+      "base_price": 8000,
+      "popular": true
+    },
+    {
+      "id": "marketplace-platform",
+      "name": "Marketplace Platform",
+      "description": "Multi-vendor marketplace with seller and buyer interfaces",
+      "category": "marketplace",
+      "preview_image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
+      "features": [
+        "Vendor Dashboard",
+        "Product Listings",
+        "Order Management",
+        "Reviews & Ratings"
+      ],
+      "tech_stack": {
+        "frontend": "React + Redux",
+        "backend": "FastAPI + PostgreSQL"
+      },
+      "estimated_build_time": "3-4 weeks",
+      "base_price": 12000
+    },
+    {
+      "id": "portfolio-website",
+      "name": "Portfolio Website",
+      "description": "Stunning portfolio website for creators and professionals",
+      "category": "portfolio",
+      "preview_image": "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800",
+      "features": [
+        "Project Showcase",
+        "Blog",
+        "Contact Form",
+        "Admin Panel"
+      ],
+      "tech_stack": {
+        "frontend": "Next.js",
+        "backend": "Contentful CMS"
+      },
+      "estimated_build_time": "1 week",
+      "base_price": 3000
+    },
+    {
+      "id": "education-lms",
+      "name": "Education LMS",
+      "description": "Learning management system with courses and student tracking",
+      "category": "education",
+      "preview_image": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800",
+      "features": [
+        "Course Management",
+        "Video Lessons",
+        "Quizzes",
+        "Progress Tracking"
+      ],
+      "tech_stack": {
+        "frontend": "React",
+        "backend": "Firebase"
+      },
+      "estimated_build_time": "3 weeks",
+      "base_price": 10000
+    },
+    {
+      "id": "booking-platform",
+      "name": "Booking Platform",
+      "description": "Service booking platform with calendar and payments",
+      "category": "saas",
+      "preview_image": "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=800",
+      "features": [
+        "Calendar Booking",
+        "Payment Processing",
+        "Email Notifications",
+        "User Profiles"
+      ],
+      "tech_stack": {
+        "frontend": "React + TypeScript",
+        "backend": "Node.js + Stripe"
+      },
+      "estimated_build_time": "2-3 weeks",
+      "base_price": 7000
+    },
+    {
+      "id": "minimal-dashboard",
+      "name": "Minimal Dashboard",
+      "description": "Clean & compact interface for data-heavy applications",
+      "category": "dashboard",
+      "preview_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
+      "features": [
+        "Data Visualization",
+        "User Management",
+        "Real-time Updates",
+        "Responsive Design"
+      ],
+      "tech_stack": {
+        "frontend": "React + Vite",
+        "backend": "Node.js + Express"
+      },
+      "estimated_build_time": "2 weeks",
+      "base_price": 5000
+    },
+    {
+      "id": "custom",
+      "name": "Custom Design",
+      "description": "Tell us your vision and we'll create a unique design",
+      "category": "custom",
+      "preview_image": "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800",
+      "features": [
+        "Custom UI/UX Design",
+        "Brand Integration",
+        "Unique Layout",
+        "Personalized Features"
+      ],
+      "tech_stack": {
+        "frontend": "Your Choice",
+        "backend": "Your Choice"
+      },
+      "estimated_build_time": "Custom",
+      "base_price": "Custom",
+      "isCustom": true
+    }
+  ],
+  "categories": [
+    { "value": "all", "label": "All Templates" },
+    { "value": "ecommerce", "label": "E-commerce" },
+    { "value": "saas", "label": "SaaS" },
+    { "value": "marketplace", "label": "Marketplace" },
+    { "value": "portfolio", "label": "Portfolio" },
+    { "value": "education", "label": "Education" },
+    { "value": "dashboard", "label": "Dashboard" },
+    { "value": "custom", "label": "Custom" }
+  ]
+}

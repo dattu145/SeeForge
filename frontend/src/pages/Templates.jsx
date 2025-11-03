@@ -1,166 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Added Link import
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Clock, Zap } from "lucide-react";
-import axios from "axios";
+import { Sparkles, Clock, Zap, Star } from "lucide-react";
+import { useProject } from '@/context/ProjectContext';
+import { useSmartNavigation } from '@/hooks/useSmartNavigation';
+
+// Import JSON data
+import uiTemplates from '@/data/uiTemplates.json';
 
 const Templates = () => {
   const navigate = useNavigate();
+  const { dispatch } = useProject();
+  const { navigateToWorkflow } = useSmartNavigation();
+  
   const [templates, setTemplates] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // ✅ Use Vite's environment variable syntax
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const API = `${BACKEND_URL}/api`;
-
   useEffect(() => {
-    fetchTemplates();
+    // Use JSON data directly instead of API call
+    setTemplates(uiTemplates.templates);
   }, []);
 
-  const fetchTemplates = async () => {
-    try {
-      const response = await axios.get(`${API}/templates`);
-      const data = response.data;
-
-      // ✅ Ensure response is an array
-      if (Array.isArray(data)) {
-        setTemplates(data);
-      } else {
-        console.warn("Templates API did not return an array, using demo data.");
-        setTemplates(getDemoTemplates());
-      }
-    } catch (error) {
-      console.error("Error fetching templates:", error);
-      setTemplates(getDemoTemplates());
-    } finally {
-      setLoading(false);
-    }
+  const handleUseTemplate = (template) => {
+    // Use smart navigation to go to new-project with template data
+    navigateToWorkflow('new-project', { template });
   };
 
-  const getDemoTemplates = () => [
-    {
-      id: "1",
-      name: "E-commerce Starter",
-      description:
-        "Complete e-commerce platform with product catalog, cart, and checkout",
-      category: "ecommerce",
-      preview_image:
-        "https://images.unsplash.com/photo-1557821552-17105176677c?w=800",
-      features: [
-        "Product Management",
-        "Shopping Cart",
-        "Payment Integration",
-        "Admin Dashboard",
-      ],
-      tech_stack: { frontend: "React + Tailwind", backend: "Node.js + MongoDB" },
-      estimated_build_time: "2-3 weeks",
-      base_price: 6000,
-    },
-    {
-      id: "2",
-      name: "SaaS Dashboard",
-      description: "Modern SaaS dashboard with user management and analytics",
-      category: "saas",
-      preview_image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
-      features: [
-        "User Auth",
-        "Analytics Dashboard",
-        "Subscription Management",
-        "API Integration",
-      ],
-      tech_stack: { frontend: "Next.js", backend: "Supabase" },
-      estimated_build_time: "2 weeks",
-      base_price: 8000,
-    },
-    {
-      id: "3",
-      name: "Marketplace Platform",
-      description: "Multi-vendor marketplace with seller and buyer interfaces",
-      category: "marketplace",
-      preview_image:
-        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
-      features: [
-        "Vendor Dashboard",
-        "Product Listings",
-        "Order Management",
-        "Reviews & Ratings",
-      ],
-      tech_stack: {
-        frontend: "React + Redux",
-        backend: "FastAPI + PostgreSQL",
-      },
-      estimated_build_time: "3-4 weeks",
-      base_price: 12000,
-    },
-    {
-      id: "4",
-      name: "Portfolio Website",
-      description: "Stunning portfolio website for creators and professionals",
-      category: "portfolio",
-      preview_image:
-        "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800",
-      features: ["Project Showcase", "Blog", "Contact Form", "Admin Panel"],
-      tech_stack: { frontend: "Next.js", backend: "Contentful CMS" },
-      estimated_build_time: "1 week",
-      base_price: 3000,
-    },
-    {
-      id: "5",
-      name: "Education LMS",
-      description:
-        "Learning management system with courses and student tracking",
-      category: "education",
-      preview_image:
-        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800",
-      features: [
-        "Course Management",
-        "Video Lessons",
-        "Quizzes",
-        "Progress Tracking",
-      ],
-      tech_stack: { frontend: "React", backend: "Firebase" },
-      estimated_build_time: "3 weeks",
-      base_price: 10000,
-    },
-    {
-      id: "6",
-      name: "Booking Platform",
-      description: "Service booking platform with calendar and payments",
-      category: "saas",
-      preview_image:
-        "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=800",
-      features: [
-        "Calendar Booking",
-        "Payment Processing",
-        "Email Notifications",
-        "User Profiles",
-      ],
-      tech_stack: {
-        frontend: "React + TypeScript",
-        backend: "Node.js + Stripe",
-      },
-      estimated_build_time: "2-3 weeks",
-      base_price: 7000,
-    },
-  ];
-
-  const categories = [
-    { value: "all", label: "All Templates" },
-    { value: "ecommerce", label: "E-commerce" },
-    { value: "saas", label: "SaaS" },
-    { value: "marketplace", label: "Marketplace" },
-    { value: "portfolio", label: "Portfolio" },
-    { value: "education", label: "Education" },
-  ];
+  const handleStartFromScratch = () => {
+    // Reset project and go to new project page
+    navigateToWorkflow('new-project', { reset: true });
+  };
 
   const filteredTemplates =
     selectedCategory === "all"
       ? templates
-      : Array.isArray(templates)
-      ? templates.filter((t) => t.category === selectedCategory)
-      : [];
+      : templates.filter((t) => t.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-[#E6EEF8]">
@@ -176,7 +51,6 @@ const Templates = () => {
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="flex space-x-6">
-              {/* Replaced anchor tags with Link components */}
               <Link to="/dashboard" className="hover:text-[#22D3EE]">
                 Dashboard
               </Link>
@@ -194,15 +68,26 @@ const Templates = () => {
           Choose Your <span className="gradient-text">Template</span>
         </h1>
         <p className="text-xl text-[#94A3B8] max-w-2xl mx-auto">
-          Start with a professionally designed template and customize it to
-          match your vision
+          Start with a professionally designed template and customize it to match your vision
         </p>
+        
+        {/* Start from Scratch Option */}
+        <div className="mt-8">
+          <Button
+            onClick={handleStartFromScratch}
+            variant="outline"
+            className="border-[#3B82F6] text-[#3B82F6] hover:bg-[#3B82F6] hover:text-white"
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            Start from Scratch Instead
+          </Button>
+        </div>
       </section>
 
       {/* Category Filter */}
       <section className="pb-8 px-4">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-3">
-          {categories.map((category) => (
+          {uiTemplates.categories.map((category) => (
             <button
               key={category.value}
               onClick={() => setSelectedCategory(category.value)}
@@ -230,9 +115,19 @@ const Templates = () => {
               {filteredTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className="card overflow-hidden"
+                  className="card overflow-hidden hover:scale-105 transition-transform duration-300 relative"
                   data-testid={`template-${template.id}`}
                 >
+                  {/* Popular Badge */}
+                  {template.popular && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                        <Star className="w-3 h-3" />
+                        Popular
+                      </span>
+                    </div>
+                  )}
+
                   <div className="relative h-48 mb-4 rounded-lg overflow-hidden">
                     <img
                       src={template.preview_image}
@@ -240,6 +135,11 @@ const Templates = () => {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute top-4 right-4">
+                      <span className="bg-[#3B82F6] text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {template.category}
+                      </span>
+                    </div>
                   </div>
 
                   <h3 className="text-2xl font-bold mb-2">{template.name}</h3>
@@ -251,7 +151,7 @@ const Templates = () => {
                         Key Features:
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {template.features?.map((feature, idx) => (
+                        {template.features?.slice(0, 3).map((feature, idx) => (
                           <span
                             key={idx}
                             className="text-xs px-3 py-1 rounded-full glass"
@@ -259,6 +159,11 @@ const Templates = () => {
                             {feature}
                           </span>
                         ))}
+                        {template.features?.length > 3 && (
+                          <span className="text-xs px-3 py-1 rounded-full glass">
+                            +{template.features.length - 3} more
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -268,17 +173,38 @@ const Templates = () => {
                         <span>{template.estimated_build_time}</span>
                       </div>
                       <div className="text-[#22D3EE] font-semibold">
-                        ₹{template.base_price.toLocaleString()}
+                        {typeof template.base_price === 'number' 
+                          ? `₹${template.base_price.toLocaleString()}`
+                          : template.base_price
+                        }
+                      </div>
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div className="pt-2 border-t border-white/10">
+                      <p className="text-sm text-[#94A3B8] mb-1">Tech Stack:</p>
+                      <div className="flex flex-wrap gap-1 text-xs">
+                        <span className="px-2 py-1 rounded bg-[#3B82F6]/20 text-[#3B82F6]">
+                          {template.tech_stack?.frontend}
+                        </span>
+                        <span className="px-2 py-1 rounded bg-[#22D3EE]/20 text-[#22D3EE]">
+                          {template.tech_stack?.backend}
+                        </span>
                       </div>
                     </div>
                   </div>
 
                   <Button
-                    onClick={() => navigate("/new-project")}
-                    className="w-full bg-gradient-to-r from-[#3B82F6] to-[#22D3EE]"
+                    onClick={() => handleUseTemplate(template)}
+                    className={`w-full ${
+                      template.isCustom 
+                        ? 'border-[#3B82F6] text-[#3B82F6] hover:bg-[#3B82F6] hover:text-white'
+                        : 'bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] hover:opacity-90 transition-opacity'
+                    }`}
+                    variant={template.isCustom ? 'outline' : 'default'}
                   >
                     <Zap className="w-4 h-4 mr-2" />
-                    Use This Template
+                    {template.isCustom ? 'Start Custom Project' : 'Use This Template'}
                   </Button>
                 </div>
               ))}
