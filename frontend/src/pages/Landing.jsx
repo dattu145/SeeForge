@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Add Link import
 import { Button } from '@/components/ui/button';
 import { Sparkles, Zap, Rocket, Code2, Palette, Shield } from 'lucide-react';
 
@@ -17,10 +17,11 @@ const Landing = () => {
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="hidden md:flex space-x-8">
+              {/* Replace anchor tags with Link components */}
               <a href="#features" className="hover:text-[#22D3EE] transition-colors">Features</a>
-              <a href="/pricing" className="hover:text-[#22D3EE] transition-colors">Pricing</a>
-              <a href="/how-it-works" className="hover:text-[#22D3EE] transition-colors">How It Works</a>
-              <a href="/templates" className="hover:text-[#22D3EE] transition-colors">Templates</a>
+              <Link to="/pricing" className="hover:text-[#22D3EE] transition-colors">Pricing</Link>
+              <Link to="/how-it-works" className="hover:text-[#22D3EE] transition-colors">How It Works</Link>
+              <Link to="/templates" className="hover:text-[#22D3EE] transition-colors">Templates</Link>
             </div>
             <Button 
               onClick={() => navigate('/new-project')} 
@@ -171,10 +172,11 @@ const Landing = () => {
             <span className="heading-font text-xl font-bold">SeeForge</span>
           </div>
           <div className="flex space-x-6 text-[#94A3B8]">
-            <a href="/pricing" className="hover:text-[#22D3EE]">Pricing</a>
-            <a href="/how-it-works" className="hover:text-[#22D3EE]">How it Works</a>
-            <a href="/templates" className="hover:text-[#22D3EE]">Templates</a>
-            <a href="#" className="hover:text-[#22D3EE]">Contact</a>
+            {/* Replace footer anchor tags with Link components */}
+            <Link to="/pricing" className="hover:text-[#22D3EE]">Pricing</Link>
+            <Link to="/how-it-works" className="hover:text-[#22D3EE]">How it Works</Link>
+            <Link to="/templates" className="hover:text-[#22D3EE]">Templates</Link>
+            <Link to="/contact" className="hover:text-[#22D3EE]">Contact</Link>
           </div>
         </div>
       </footer>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Added Link import
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Sparkles, Check, Zap } from 'lucide-react';
@@ -131,9 +131,10 @@ const Pricing = () => {
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="flex space-x-6">
-              <a href="/templates" className="hover:text-[#22D3EE]">Templates</a>
-              <a href="/how-it-works" className="hover:text-[#22D3EE]">How It Works</a>
-              <a href="/dashboard" className="hover:text-[#22D3EE]">Dashboard</a>
+              {/* Replaced anchor tags with Link components */}
+              <Link to="/templates" className="hover:text-[#22D3EE]">Templates</Link>
+              <Link to="/how-it-works" className="hover:text-[#22D3EE]">How It Works</Link>
+              <Link to="/dashboard" className="hover:text-[#22D3EE]">Dashboard</Link>
             </div>
           </div>
         </div>
@@ -240,7 +241,7 @@ const Pricing = () => {
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold">{addon.name}</h3>
                   <span className="text-[#22D3EE] font-semibold">
-                    ₹{addon.price.toLocaleString()}
+                    ₹${addon.price.toLocaleString()}
                   </span>
                 </div>
                 <p className="text-sm text-[#94A3B8]">{addon.description}</p>

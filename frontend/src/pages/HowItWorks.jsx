@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Added Link import
 import { Button } from '@/components/ui/button';
 import { Sparkles, Lightbulb, Code2, Rocket, Download, CheckCircle } from 'lucide-react';
 
@@ -67,9 +67,10 @@ const HowItWorks = () => {
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="flex space-x-6">
-              <a href="/templates" className="hover:text-[#22D3EE]">Templates</a>
-              <a href="/pricing" className="hover:text-[#22D3EE]">Pricing</a>
-              <a href="/dashboard" className="hover:text-[#22D3EE]">Dashboard</a>
+              {/* Replaced anchor tags with Link components */}
+              <Link to="/templates" className="hover:text-[#22D3EE]">Templates</Link>
+              <Link to="/pricing" className="hover:text-[#22D3EE]">Pricing</Link>
+              <Link to="/dashboard" className="hover:text-[#22D3EE]">Dashboard</Link>
             </div>
           </div>
         </div>

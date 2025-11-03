@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Added Link import
 import { Button } from "@/components/ui/button";
 import { Sparkles, Clock, Zap } from "lucide-react";
 import axios from "axios";
@@ -176,12 +176,13 @@ const Templates = () => {
               <span className="heading-font text-2xl font-bold">SeeForge</span>
             </div>
             <div className="flex space-x-6">
-              <a href="/dashboard" className="hover:text-[#22D3EE]">
+              {/* Replaced anchor tags with Link components */}
+              <Link to="/dashboard" className="hover:text-[#22D3EE]">
                 Dashboard
-              </a>
-              <a href="/pricing" className="hover:text-[#22D3EE]">
+              </Link>
+              <Link to="/pricing" className="hover:text-[#22D3EE]">
                 Pricing
-              </a>
+              </Link>
             </div>
           </div>
         </div>
